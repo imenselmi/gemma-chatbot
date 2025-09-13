@@ -32,12 +32,13 @@ pip install -r requirements.txt
 
 ## 4️⃣ Deploy Gemma-3-27B-IT Model
 Option 1: Using vLLM with Docker (Recommended for GPU isolation)
+
 # Start a screen session
-``` screen -S Gemma-3-27B-IT
+```  screen -S Gemma-3-27B-IT
 ```
 # Navigate to models directory
 ``` cd models
-git clone https://huggingface.co/google/gemma-3-27b-it
+ git clone https://huggingface.co/google/gemma-3-27b-it
 ```
 
 # Run Docker container with NVIDIA Triton & vLLM
@@ -67,10 +68,10 @@ curl http://localhost:8018/v1/chat/completions \
 
 Option 2: Without Docker (Direct Python Execution)
 # Activate Python environment
-``` source ~/gemmaenv/bin/activate
+```  source ~/gemmaenv/bin/activate
 ```
 # Navigate to model folder
-```cd models
+```  cd models
 ```
 # Run vLLM server directly
 ``` python3 -m vllm.entrypoints.openai.api_server \
@@ -85,7 +86,7 @@ Option 2: Without Docker (Direct Python Execution)
 This will launch the API server directly, accessible at http://localhost:8018.
 
 ## 5️⃣ Start MLflow Server
-``` mkdir -p ~/mlflow/artifacts
+```  mkdir -p ~/mlflow/artifacts
 ```
 ``` mlflow server \
     --backend-store-uri sqlite:///~/mlflow/mlflow.db \
@@ -97,7 +98,7 @@ This will launch the API server directly, accessible at http://localhost:8018.
 URL: http://localhost:5000
 
 ## 6️⃣ Start Backend FastAPI
-``` cd backend/app
+```  cd backend/app
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
