@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+gemmaenv/
+*.egg-info/
+*.egg
+
+# Logs
+*.log
+
+# MLflow artifacts (can be large)
+mlruns/
+mlflow/artifacts/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node/Frontend (if using npm or build)
+node_modules/
+dist/
+build/
+
+# Docker (if any leftover)
+docker-compose.override.yml
+*.docker
+
+# Temporary files
+*.swp
+*.swo
+*.bak
+*.tmp

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemma Chatbot</title>
+<style>
+  /* Reset & Body */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, html {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  header {
+    background: #4f46e5;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 2rem; margin-bottom: 5px; }
+  header p { font-size: 1rem; opacity: 0.9; }
+
+  /* Main Chat Container */
+  .chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    width: 100%;
+    margin: 20px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  /* Chat Body */
+  .chat-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    background: #f9fafb;
+  }
+
+  .message {
+    margin: 10px 0;
+    padding: 12px 18px;
+    border-radius: 20px;
+    max-width: 75%;
+    word-wrap: break-word;
+  }
+
+  .user-message {
+    background: #4f46e5;
+    color: white;
+    align-self: flex-end;
+  }
+
+  .bot-message {
+    background: #e5e7eb;
+    color: #111827;
+    align-self: flex-start;
+  }
+
+  /* Footer */
+  .chat-footer {
+    display: flex;
+    border-top: 1px solid #ddd;
+    background: #ffffff;
+  }
+
+  .chat-footer input {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    font-size: 1.1rem;
+    outline: none;
+  }
+
+  .chat-footer button {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .chat-footer button:hover { background: #3730a3; }
+
+  /* Greeting Section */
+  .greeting {
+    padding: 20px;
+    background: #eef2ff;
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .greeting h2 {
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    color: #4f46e5;
+  }
+
+  /* Scrollbar styling */
+  .chat-body::-webkit-scrollbar {
+    width: 8px;
+  }
+  .chat-body::-webkit-scrollbar-thumb {
+    background: #4f46e5;
+    border-radius: 4px;
+  }
+
+  @media(max-width: 600px) {
+    .chat-container { width: 95%; }
+    .chat-footer input { font-size: 1rem; }
+    .chat-footer button { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Gemma Chatbot 🤖</h1>
+  <p>Your AI assistant powered by Gemma-3-27B-IT, an open-source LLM for text generation and conversation.</p>
+</header>
+
+  <div class="chat-body" id="chatBody"></div>
+
+  <div class="chat-footer">
+    <input type="text" id="chatInput" placeholder="Type your message here...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+const chatBody = document.getElementById("chatBody");
+const chatInput = document.getElementById("chatInput");
+
+// Append messages
+function appendMessage(content, sender) {
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message", sender === "user" ? "user-message" : "bot-message");
+    messageDiv.innerHTML = content.replace(/\n/g, "<br>");
+    chatBody.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// Send message to backend
+async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    appendMessage(message, "user");
+    chatInput.value = "";
+
+    try {
+        const response = await fetch("http://localhost:8000/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        if (data.response) {
+            appendMessage(data.response, "bot");
+        } else if (data.error) {
+            appendMessage("Error: " + data.error, "bot");
+        }
+    } catch (err) {
+        appendMessage("Error connecting to backend.", "bot");
+    }
+}
+
+// Send message on Enter key
+chatInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+
+</body>
+</html>
